@@ -555,7 +555,7 @@
       text-decoration: none;
       flex-shrink: 0;
     }
-    .site-logo svg { height: 36px; width: auto; }
+    .site-logo img { height: 36px; width: auto; }
     .site-logo:hover { opacity: 0.85; }
     .logo-nav-wrap {
       display: flex;
@@ -567,7 +567,7 @@
       width: 100%;
     }
     @media (max-width: 640px) {
-      .site-logo svg { height: 28px; }
+      .site-logo img { height: 28px; }
       .logo-nav-wrap { padding: 0 16px; }
     }
 
@@ -603,25 +603,7 @@
 <div class="nav-tabs">
   <div class="logo-nav-wrap">
     <a href="#" class="site-logo" title="DYA_AI - DidYouAskAI">
-      <svg height="36" viewBox="0 0 180 36" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#a78bfa"/>
-            <stop offset="100%" stop-color="#38bdf8"/>
-          </linearGradient>
-          <linearGradient id="logoDotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#7c3aed"/>
-            <stop offset="100%" stop-color="#06b6d4"/>
-          </linearGradient>
-        </defs>
-        <polygon points="9,2 23,10 23,24 9,32 -5,24 -5,10" fill="#1a1050" stroke="url(#logoDotGrad)" stroke-width="1.2"/>
-        <polygon points="9,3 21,10 21,23 9,29 -3,23 -3,10" fill="#4c1d95" opacity="0.5"/>
-        <line x1="9" y1="12" x2="9" y2="22" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
-        <line x1="9" y1="12" x2="15" y2="16" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-        <line x1="9" y1="22" x2="15" y2="18" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-        <text x="38" y="27" font-family="'Segoe UI','Arial Black',sans-serif" font-size="20" font-weight="900" fill="url(#logoGrad)" letter-spacing="1">DYA</text>
-        <text x="90" y="20" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#a78bfa" letter-spacing="0.5">_AI</text>
-      </svg>
+      <img src="DYA_AI_logo.png" alt="DYA_AI Logo" height="36">
     </a>
     <div style="display:flex;align-items:center;gap:0">
       <div class="nav-tab active" onclick="switchTab('hermes')">Hermes Agent 教學</div>
