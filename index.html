@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DYA_AI — DidYouAskAI</title>
+  <style>
+    :root {
+      --bg-primary: #06091a;
+      --bg-secondary: #0d1b3e;
+      --bg-card: #111827;
+      --bg-card2: #0f172a;
+      --accent-purple: #7c3aed;
+      --accent-cyan: #06b6d4;
+      --accent-light-purple: #a78bfa;
+      --accent-light-cyan: #38bdf8;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --border-color: rgba(124, 58, 237, 0.25);
+      --border-cyan: rgba(6, 182, 212, 0.25);
+      --neon-purple: rgba(124, 58, 237, 0.15);
+      --neon-cyan: rgba(6, 182, 212, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ---- ANIMATIONS ---- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-ring {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.4); }
+      50%       { box-shadow: 0 0 0 14px rgba(124,58,237,0); }
+    }
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes scanline {
+      0%   { top: -2px; }
+      100% { top: 100%; }
+    }
+
+    .fade-in { animation: fadeInUp 0.7s ease both; }
+    .fade-in-delay-1 { animation: fadeInUp 0.7s ease 0.1s both; }
+    .fade-in-delay-2 { animation: fadeInUp 0.7s ease 0.2s both; }
+    .fade-in-delay-3 { animation: fadeInUp 0.7s ease 0.3s both; }
+
+    /* ---- HERO ---- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(124,58,237,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(6,182,212,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      background: rgba(124,58,237,0.1);
+      font-size: 13px;
+      color: var(--accent-light-purple);
+      margin-bottom: 28px;
+      letter-spacing: 0.05em;
+    }
+    .brand-badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      animation: pulse-ring 2s ease infinite;
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 10vw, 96px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #a78bfa 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s ease infinite;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .hero .subtitle {
+      font-size: clamp(14px, 3vw, 18px);
+      color: var(--text-secondary);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .hero-desc {
+      max-width: 600px;
+      font-size: 17px;
+      color: #cbd5e1;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    .pill {
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      border: 1px solid;
+      transition: all 0.25s ease;
+    }
+    .pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .pill-purple {
+      background: rgba(124,58,237,0.15);
+      border-color: rgba(124,58,237,0.4);
+      color: #c4b5fd;
+    }
+    .pill-cyan {
+      background: rgba(6,182,212,0.1);
+      border-color: rgba(6,182,212,0.3);
+      color: #7dd3fc;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      border-radius: 100px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    }
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(124,58,237,0.5);
+    }
+
+    /* ---- NAV TABS ---- */
+    .nav-tabs {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6,9,26,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+    .nav-tab {
+      padding: 16px 32px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .nav-tab.active, .nav-tab:hover {
+      color: var(--accent-light-purple);
+      border-bottom-color: var(--accent-purple);
+    }
+
+    /* ---- SECTIONS ---- */
+    .section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      max-width: 620px;
+    }
+
+    /* ---- CARDS ---- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover { border-color: rgba(124,58,237,0.5); transform: translateY(-2px); }
+    .card:hover::before { opacity: 1; }
+
+    .card-cyan {
+      border-color: var(--border-cyan);
+    }
+    .card-cyan::before {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-light-purple));
+    }
+    .card-cyan:hover { border-color: rgba(6,182,212,0.5); }
+
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    .icon-purple { background: rgba(124,58,237,0.15); }
+    .icon-cyan   { background: rgba(6,182,212,0.12); }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .card p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ---- STEPS ---- */
+    .step {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent-purple);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-light-purple);
+      flex-shrink: 0;
+      background: rgba(124,58,237,0.08);
+    }
+    .step-content h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ---- CODE BLOCKS ---- */
+    .code-block {
+      background: #0b0f1e;
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      font-family: 'Courier New', 'Fira Code', monospace;
+      font-size: 14px;
+      color: #7dd3fc;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-block .code-label {
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: inherit;
+    }
+    .code-block code { display: block; }
+    .code-comment { color: #475569; }
+    .code-cmd     { color: #86efac; }
+    .code-flag    { color: #fbbf24; }
+
+    /* ---- TABS INSIDE SECTION ---- */
+    .os-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .os-tab {
+      padding: 7px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .os-tab.active, .os-tab:hover {
+      background: rgba(124,58,237,0.15);
+      border-color: var(--accent-purple);
+      color: var(--accent-light-purple);
+    }
+
+    /* ---- PROVIDER GRID ---- */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .provider-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    .provider-card:hover {
+      border-color: rgba(124,58,237,0.4);
+      transform: translateY(-2px);
+    }
+    .provider-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-light-purple);
+      margin-bottom: 6px;
+    }
+    .provider-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ---- FAQ ---- */
+    .faq-item {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 18px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .faq-q:hover { background: rgba(124,58,237,0.06); }
+    .faq-q.open  { color: var(--accent-light-purple); }
+    .faq-arrow { transition: transform 0.2s; font-size: 12px; color: var(--text-muted); }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.2s;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .faq-a.open {
+      max-height: 300px;
+      padding: 0 24px 20px;
+    }
+
+    /* ---- WEEKLY NEWS ---- */
+    .news-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: gap;
+    }
+    .update-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border-cyan);
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      background: rgba(6,182,212,0.08);
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .news-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.25s;
+    }
+    .news-card:hover {
+      border-color: rgba(124,58,237,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .news-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .tag-news    { background: rgba(124,58,237,0.15); color: #c4b5fd; }
+    .tag-tool    { background: rgba(6,182,212,0.12);  color: #7dd3fc; }
+    .tag-model   { background: rgba(139,92,246,0.15); color: #c084fc; }
+    .tag-opinion { background: rgba(6,182,212,0.08);  color: #67e8f9; }
+
+    .news-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .news-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .placeholder-note {
+      border: 1.5px dashed rgba(124,58,237,0.3);
+      border-radius: 14px;
+      padding: 28px 32px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .placeholder-note strong {
+      display: block;
+      font-size: 16px;
+      color: var(--accent-light-purple);
+      margin-bottom: 8px;
+    }
+
+    /* ---- DIVIDER ---- */
+    .section-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent);
+      margin: 8px 0;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--accent-light-purple); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 640px) {
+      .nav-tab { padding: 14px 16px; font-size: 13px; }
+      .section { padding: 48px 16px; }
+      .card { padding: 22px; }
+      .step { flex-direction: column; gap: 12px; }
+      .hero h1 { font-size: 56px; }
+    }
+
+    /* ---- SECTION VISIBILITY ---- */
+    .content-section { display: none; }
+    .content-section.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ======= HERO ======= -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="brand-badge fade-in">
+    <span class="dot"></span>
+    DYA_AI · DidYouAskAI
+  </div>
+  <h1 class="fade-in-delay-1">DYA_AI</h1>
+  <p class="subtitle fade-in-delay-1">Did You Ask AI?</p>
+  <p class="hero-desc fade-in-delay-2">
+    香港 AI Master 在讀生 · 現職 AI 從業者。<br>
+    幫你拆解 AI 工具、教你實際應用、分享最新行業動態。
+  </p>
+  <div class="pill-row fade-in-delay-2">
+    <span class="pill pill-purple">🧠 教學 AI 用法</span>
+    <span class="pill pill-cyan">🔧 拆解 AI 工具</span>
+    <span class="pill pill-purple">📡 每週 AI 資訊</span>
+  </div>
+  <a href="https://instagram.com/DidYouAskAI" class="cta-btn fade-in-delay-3" target="_blank">Follow @DidYouAskAI ↗</a>
+</section>
+
+<!-- ======= NAV TABS ======= -->
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('hermes')">Hermes Agent 安裝教學</div>
+  <div class="nav-tab" onclick="switchTab('news')">📡 每週 AI 資訊</div>
+</div>
+
+<!-- ======= PART 1: HERMES AGENT ======= -->
+<div id="hermes" class="content-section active">
+  <div class="section">
+
+    <div class="section-label">Part 1 · 工具教學</div>
+    <h2 class="section-title">Hermes Agent Desktop<br>完整安裝教學</h2>
+    <p class="section-desc">由 Nous Research 出品的開源 AI Agent，自我學習、自我進化。一次安裝，終身升級。</p>
+
+    <!-- WHAT IS -->
+    <div class="card fade-in">
+      <div class="card-icon icon-purple">🤖</div>
+      <h3>Hermes Agent 係咩？</h3>
+      <p>
+        Hermes Agent 係由 <strong style="color:#c4b5fd">Nous Research</strong>（著名開源 AI 研究機構）開發嘅<strong style="color:#c4b5fd">自我進化 AI Agent</strong>。
+        佢唔係普通嘅 Chatbot wrapper，而係一個真正嘅自主代理人：
+      </p>
+      <br>
+      <p>✦ <strong style="color:#7dd3fc">自我學習</strong> — 自動從使用經驗中創建 Skill，下次任務更快更準</p>
+      <p>✦ <strong style="color:#7dd3fc">跨平台存在</strong> — 可以住在 Telegram、Discord、WhatsApp，唔係困喺個 App 度</p>
+      <p>✦ <strong style="color:#7dd3fc">60+ 內建工具</strong> — 網頁搜尋、圖片生成、TTS、瀏覽器控制，一次過</p>
+      <p>✦ <strong style="color:#7dd3fc">MCP 支援</strong> — 連接任何 MCP 伺服器，無限延伸能力</p>
+      <p>✦ <strong style="color:#7dd3fc">支援本機模型</strong> — Ollama、OpenRouter、Nous Portal 任你揀</p>
+    </div>
+
+    <!-- INSTALL -->
+    <h3 style="font-size:22px;font-weight:700;margin:40px 0 24px;color:var(--accent-light-purple)">📥 下載安裝</h3>
+
+    <div class="os-tabs">
+      <div class="os-tab active" onclick="switchOS('win')">🪟 Windows</div>
+      <div class="os-tab" onclick="switchOS('mac')">🍎 macOS</div>
+      <div class="os-tab" onclick="switchOS('linux')">🐧 Linux</div>
+    </div>
+
+    <div id="os-win" class="os-content">
+      <div class="card card-cyan">
+        <h3>Windows 安裝（推薦：Desktop Installer）</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>下載 Desktop Installer</h4>
+            <p>前往 <a href="https://hermes-agent.nousresearch.com/" target="_blank" style="color:#38bdf8">hermes-agent.nousresearch.com</a> 下載 Windows Desktop Installer，雙擊執行即可。安裝程式會自動處理所有依賴（Python、Node.js、ripgrep、ffmpeg）。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>或用 PowerShell 命令安裝（進階）</h4>
+            <div class="code-block">
+              <span class="code-label">PowerShell</span>
+              <code><span class="code-comment"># 以 Administrator 身份執行 PowerShell，然後輸入：</span></code>
+              <code><span class="code-cmd">iex (irm https://hermes-agent.nousresearch.com/install.ps1)</span></code>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>完成後啟動</h4>
+            <div class="code-block">
+              <code><span class="code-cmd">hermes</span>  <span class="code-comment"># 直接對話</span></code>
+              <code><span class="code-cmd">hermes desktop</span>  <span class="code-comment"># 啟動桌面 GUI</span></code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="os-mac" class="os-content" style="display:none">
+      <div class="card card-cyan">
+        <h3>macOS 安裝</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>方法一：Desktop Installer（最簡單）</h4>
+            <p>前往 <a href="https://hermes-agent.nousresearch.com/" target="_blank" style="color:#38bdf8">hermes-agent.nousresearch.com</a> 下載 macOS DMG，開啟後拖入 Applications 即可。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>方法二：Terminal 安裝</h4>
+            <p>首先確保已安裝 Git（<code style="color:#7dd3fc">git --version</code> 測試），然後執行：</p>
+            <div class="code-block">
+              <span class="code-label">Terminal</span>
+              <code><span class="code-cmd">curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</span></code>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>重載 Shell 並啟動</h4>
+            <div class="code-block">
+              <code><span class="code-cmd">source ~/.zshrc</span></code>
+              <code><span class="code-cmd">hermes</span></code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="os-linux" class="os-content" style="display:none">
+      <div class="card card-cyan">
+        <h3>Linux / WSL2 安裝</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>安裝前置需求</h4>
+            <div class="code-block">
+              <span class="code-label">Bash</span>
+              <code><span class="code-comment"># Debian / Ubuntu</span></code>
+              <code><span class="code-cmd">sudo apt install git curl xz-utils build-essential</span></code>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>執行安裝腳本</h4>
+            <div class="code-block">
+              <code><span class="code-cmd">curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</span></code>
+            </div>
+            <p style="margin-top:10px;font-size:13px">安裝程式會自動偵測環境，下載 Python 3.11、Node.js v22 等全部依賴。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>重載並啟動</h4>
+            <div class="code-block">
+              <code><span class="code-cmd">source ~/.bashrc</span></code>
+              <code><span class="code-cmd">hermes</span></code>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>（可選）啟動 Desktop GUI</h4>
+            <div class="code-block">
+              <code><span class="code-cmd">hermes desktop</span></code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECT MODEL -->
+    <h3 style="font-size:22px;font-weight:700;margin:48px 0 24px;color:var(--accent-light-purple)">🔌 連接 AI 模型</h3>
+    <p style="color:var(--text-secondary);margin-bottom:24px;font-size:15px">安裝完成後，你需要連接一個 AI 模型提供商。以下是主要選擇：</p>
+
+    <div class="provider-grid">
+      <div class="provider-card">
+        <div class="provider-name">🚀 Nous Portal（推薦）</div>
+        <div class="provider-desc">一次 OAuth 登入搞掂，300+ 模型 + Tool Gateway（網搜、圖片生成、TTS）</div>
+        <div class="code-block" style="margin-top:14px;padding:12px 16px">
+          <code><span class="code-cmd">hermes setup --portal</span></code>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-name">🔗 OpenRouter</div>
+        <div class="provider-desc">按用量計費，支援 GPT-4o、Gemini、Claude 等主流模型</div>
+        <div class="code-block" style="margin-top:14px;padding:12px 16px">
+          <code><span class="code-cmd">hermes config set OPENROUTER_API_KEY sk-or-...</span></code>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-name">🏠 Ollama（本機模型）</div>
+        <div class="provider-desc">完全離線，隱私最高，需要本地 GPU 資源</div>
+        <div class="code-block" style="margin-top:14px;padding:12px 16px">
+          <code style="font-size:12px"><span class="code-comment"># 在 config.yaml 設定</span></code>
+          <code style="font-size:12px"><span class="code-cmd">base_url: "http://localhost:11434/v1"</span></code>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-name">🤖 OpenAI / Anthropic</div>
+        <div class="provider-desc">直接使用 API Key 連接官方 GPT-4o 或 Claude</div>
+        <div class="code-block" style="margin-top:14px;padding:12px 16px">
+          <code><span class="code-cmd">hermes config set OPENAI_API_KEY sk-...</span></code>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASIC USAGE -->
+    <h3 style="font-size:22px;font-weight:700;margin:48px 0 24px;color:var(--accent-light-purple)">🖥️ 基本使用方法</h3>
+
+    <div class="card">
+      <h3>常用指令一覽</h3>
+      <div class="code-block">
+        <span class="code-label">Terminal</span>
+        <code><span class="code-cmd">hermes</span>              <span class="code-comment"># 開始對話（CLI 模式）</span></code>
+        <code><span class="code-cmd">hermes desktop</span>      <span class="code-comment"># 啟動桌面 GUI</span></code>
+        <code><span class="code-cmd">hermes model</span>        <span class="code-comment"># 切換 AI 模型</span></code>
+        <code><span class="code-cmd">hermes tools</span>        <span class="code-comment"># 管理工具開關</span></code>
+        <code><span class="code-cmd">hermes setup</span>        <span class="code-comment"># 重跑設定精靈</span></code>
+        <code><span class="code-cmd">hermes doctor</span>       <span class="code-comment"># 診斷問題</span></code>
+        <code><span class="code-cmd">hermes config</span>       <span class="code-comment"># 查看所有設定</span></code>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>第一個任務範例</h3>
+      <p style="margin-bottom:16px;font-size:14px;color:var(--text-secondary)">啟動 Hermes 後，直接用自然語言提出任何請求：</p>
+      <div class="code-block">
+        <span class="code-label">對話框</span>
+        <code><span class="code-comment"># 搜尋網頁</span></code>
+        <code><span class="code-cmd">Search for the latest AI news from this week</span></code>
+        <code></code>
+        <code><span class="code-comment"># 讀取並分析檔案</span></code>
+        <code><span class="code-cmd">Summarize the PDF in my Downloads folder</span></code>
+        <code></code>
+        <code><span class="code-comment"># 自動化任務</span></code>
+        <code><span class="code-cmd">幫我整理 /Documents 裡的圖片，按日期分類</span></code>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h3 style="font-size:22px;font-weight:700;margin:48px 0 24px;color:var(--accent-light-purple)">❓ 常見問題</h3>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span>安裝後出現 <code>hermes: command not found</code> 怎辦？</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        需要重載你的 Shell 設定檔。macOS/Linux 執行 <code>source ~/.zshrc</code> 或 <code>source ~/.bashrc</code>，Windows 重新開啟 PowerShell 即可。如仍未解決，執行 <code>hermes doctor</code> 診斷。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span>免費用得唔？需要俾錢嗎？</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Hermes Agent 本身係免費開源的。但你需要連接一個 AI 模型提供商——Nous Portal 提供免費試用額度，OpenRouter 按用量計費，Ollama 本機模型則完全免費（但需要自備硬件）。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span>Hermes Desktop 同 CLI 有咩分別？</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        CLI（命令列）版係最核心的版本，功能齊全；Desktop 版提供圖形界面，更易上手。兩者功能基本相同，推薦新手先用 Desktop。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span>點樣更新到最新版本？</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Hermes 會自動偵測安裝方式並顯示對應更新指令。通常執行 <code>hermes update</code> 即可。如有問題先執行 <code>hermes config check</code> 再 <code>hermes config migrate</code>。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">
+        <span>可以喺 Telegram 用 Hermes 嗎？</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        可以！Hermes 支援 20+ 訊息平台，包括 Telegram、Discord、WhatsApp、WeChat、Feishu、DingTalk 等。執行 <code>hermes gateway setup</code> 進行設定。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======= PART 2: WEEKLY NEWS ======= -->
+<div id="news" class="content-section">
+  <div class="section">
+
+    <div class="news-header">
+      <div>
+        <div class="section-label">Part 2 · 每週資訊</div>
+        <h2 class="section-title">每週 AI 動態 📡</h2>
+        <p class="section-desc">最新 AI 新聞、工具、模型發布，每週日更新</p>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+      <div class="update-badge">
+        <span>●</span>
+        最後更新：<strong id="lastUpdate">2026 年 6 月 22 日</strong>
+      </div>
+      <span style="font-size:13px;color:var(--text-muted)">第 1 期 · 每週日更新</span>
+    </div>
+
+    <!-- SAMPLE CONTENT (placeholder for weekly update) -->
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-tag tag-news">🗞 本週頭條</div>
+        <h4>【更新欄位】本週最大 AI 新聞</h4>
+        <p>每週將在此更新最重要的 AI 行業新聞，包括大型科技公司動態、研究突破、政策法規等。</p>
+      </div>
+      <div class="news-card">
+        <div class="news-tag tag-tool">🔧 新工具</div>
+        <h4>【更新欄位】本週值得試的 AI 工具</h4>
+        <p>每週精選 1-2 款新發布或值得注意的 AI 工具，附上簡短點評和使用場景。</p>
+      </div>
+      <div class="news-card">
+        <div class="news-tag tag-model">🤖 新模型</div>
+        <h4>【更新欄位】本週新模型發布</h4>
+        <p>追蹤 OpenAI、Anthropic、Google、Meta、Mistral 等主流廠商的最新模型動態。</p>
+      </div>
+      <div class="news-card">
+        <div class="news-tag tag-opinion">💡 本週洞見</div>
+        <h4>【更新欄位】一個值得思考的 AI 觀點</h4>
+        <p>分享一個本週在 AI 領域值得深思的觀點、研究發現，或實用小技巧。</p>
+      </div>
+    </div>
+
+    <div class="placeholder-note">
+      <strong>📌 給自己的備忘</strong>
+      每週日更新以上 4 個欄位：頭條新聞 · 新工具 · 新模型 · 本週洞見<br>
+      同時更新「最後更新日期」和「第 X 期」標示<br>
+      <span style="font-size:12px;margin-top:8px;display:block;color:#334155">（此提示僅顯示在草稿模式，正式發布前記得移除）</span>
+    </div>
+
+    <hr class="section-divider" style="margin:40px 0">
+
+    <!-- ARCHIVE (example structure) -->
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;color:var(--text-primary)">📚 往期回顧</h3>
+    <div class="card" style="text-align:center;padding:40px">
+      <p style="color:var(--text-muted);font-size:15px">往期內容將陸續在此存檔整理，敬請期待。</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======= FOOTER ======= -->
+<footer>
+  <p style="font-size:16px;font-weight:600;color:var(--accent-light-purple);margin-bottom:8px">DYA_AI · DidYouAskAI</p>
+  <p>由香港 AI Master 在讀生製作 · <a href="https://instagram.com/DidYouAskAI" target="_blank">@DidYouAskAI</a></p>
+  <p style="margin-top:8px">DYA = Did You Ask AI？每次用 AI 之前，先問自己一次。</p>
+</footer>
+
+<script>
+  function switchTab(id) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = document.querySelectorAll('.nav-tab');
+    if (id === 'hermes') tabs[0].classList.add('active');
+    else tabs[1].classList.add('active');
+    window.scrollTo({top: document.querySelector('.nav-tabs').offsetTop, behavior: 'smooth'});
+  }
+
+  function switchOS(os) {
+    document.querySelectorAll('.os-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('os-' + os).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  function toggleFAQ(el) {
+    const answer = el.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-a.open').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-q.open').forEach(q => q.classList.remove('open'));
+    if (!isOpen) {
+      answer.classList.add('open');
+      el.classList.add('open');
+    }
+  }
+
+  // Intersection Observer for fade-in
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.card, .news-card, .faq-item, .provider-card').forEach(el => {
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
