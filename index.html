@@ -547,6 +547,30 @@
       .hero h1 { font-size: 56px; }
     }
 
+    /* ---- LOGO ---- */
+    .site-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .site-logo svg { height: 36px; width: auto; }
+    .site-logo:hover { opacity: 0.85; }
+    .logo-nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 640px) {
+      .site-logo svg { height: 28px; }
+      .logo-nav-wrap { padding: 0 16px; }
+    }
+
     /* ---- SECTION VISIBILITY ---- */
     .content-section { display: none; }
     .content-section.active { display: block; }
@@ -577,8 +601,33 @@
 
 <!-- ======= NAV TABS ======= -->
 <div class="nav-tabs">
-  <div class="nav-tab active" onclick="switchTab('hermes')">Hermes Agent 安裝教學</div>
-  <div class="nav-tab" onclick="switchTab('news')">📡 每週 AI 資訊</div>
+  <div class="logo-nav-wrap">
+    <a href="#" class="site-logo" title="DYA_AI - DidYouAskAI">
+      <svg height="36" viewBox="0 0 180 36" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#38bdf8"/>
+          </linearGradient>
+          <linearGradient id="logoDotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#06b6d4"/>
+          </linearGradient>
+        </defs>
+        <polygon points="9,2 23,10 23,24 9,32 -5,24 -5,10" fill="#1a1050" stroke="url(#logoDotGrad)" stroke-width="1.2"/>
+        <polygon points="9,3 21,10 21,23 9,29 -3,23 -3,10" fill="#4c1d95" opacity="0.5"/>
+        <line x1="9" y1="12" x2="9" y2="22" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
+        <line x1="9" y1="12" x2="15" y2="16" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <line x1="9" y1="22" x2="15" y2="18" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <text x="38" y="27" font-family="'Segoe UI','Arial Black',sans-serif" font-size="20" font-weight="900" fill="url(#logoGrad)" letter-spacing="1">DYA</text>
+        <text x="90" y="20" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#a78bfa" letter-spacing="0.5">_AI</text>
+      </svg>
+    </a>
+    <div style="display:flex;align-items:center;gap:0">
+      <div class="nav-tab active" onclick="switchTab('hermes')">Hermes Agent 教學</div>
+      <div class="nav-tab" onclick="switchTab('news')">📡 每週 AI 資訊</div>
+    </div>
+  </div>
 </div>
 
 <!-- ======= PART 1: HERMES AGENT ======= -->
@@ -868,40 +917,93 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px">
       <div class="update-badge">
         <span>●</span>
-        最後更新：<strong id="lastUpdate">2026 年 6 月 22 日</strong>
+        最後更新：<strong id="lastUpdate">2026 年 6 月 23 日</strong>
       </div>
       <span style="font-size:13px;color:var(--text-muted)">第 1 期 · 每週日更新</span>
     </div>
 
-    <!-- SAMPLE CONTENT (placeholder for weekly update) -->
+    <!-- ===== REAL NEWS CONTENT (2026-06-23) ===== -->
     <div class="news-grid">
-      <div class="news-card">
-        <div class="news-tag tag-news">🗞 本週頭條</div>
-        <h4>【更新欄位】本週最大 AI 新聞</h4>
-        <p>每週將在此更新最重要的 AI 行業新聞，包括大型科技公司動態、研究突破、政策法規等。</p>
-      </div>
-      <div class="news-card">
-        <div class="news-tag tag-tool">🔧 新工具</div>
-        <h4>【更新欄位】本週值得試的 AI 工具</h4>
-        <p>每週精選 1-2 款新發布或值得注意的 AI 工具，附上簡短點評和使用場景。</p>
-      </div>
-      <div class="news-card">
-        <div class="news-tag tag-model">🤖 新模型</div>
-        <h4>【更新欄位】本週新模型發布</h4>
-        <p>追蹤 OpenAI、Anthropic、Google、Meta、Mistral 等主流廠商的最新模型動態。</p>
-      </div>
-      <div class="news-card">
-        <div class="news-tag tag-opinion">💡 本週洞見</div>
-        <h4>【更新欄位】一個值得思考的 AI 觀點</h4>
-        <p>分享一個本週在 AI 領域值得深思的觀點、研究發現，或實用小技巧。</p>
-      </div>
+      <a href="https://unwire.hk/2026/06/23/five-eyes-ai-cyber-threat-warning/ai/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-news">🗞 本週頭條</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">5 小時前</span>
+        </div>
+        <h4>五眼聯盟罕見聯合警告：AI 將顛覆政府與企業網絡攻防</h4>
+        <p>五眼情報聯盟罕見聯合發佈警告，指 AI 技術將在數月內徹底改寫網絡攻擊與防禦格局，可同時顛覆政府與企業安全。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/2026/06/23/seedance-25-bytedance-4k-30s-video/ai/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-tool">🔧 新工具</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">8 小時前</span>
+        </div>
+        <h4>Seedance 2.5：字節跳動 AI 影片工具可直出 30 秒 4K 影片</h4>
+        <p>接受最多 50 張參考素材，一鍵生成 30 秒高質素影片，有望成為 AI 影片製作的遊戲改變者。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/2026/06/23/getty-images-openai-chatgpt-licensed-photos-users-benefit/ai/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-model">🤖 新功能</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">9 小時前</span>
+        </div>
+        <h4>ChatGPT 搜尋結果正式整合 Getty Images 授權圖片</h4>
+        <p>OpenAI 宣佈 ChatGPT 搜尋結果加入 Getty Images 授權照片，用戶從此毋須擔心 AI 生成圖片嘅版權問題。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/2026/06/23/primary-school-ai-education-hong-kong-norway-debate/life-tech/school/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-opinion">💡 本週觀點</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">3 小時前</span>
+        </div>
+        <h4>香港推 AI 教育藍圖 vs 挪威禁小學生用 AI — 真正該學的是什麼？</h4>
+        <p>香港《中小學數字教育發展藍圖》大力推 AI 教育，同期挪威卻禁止小學生使用 AI。反思：學生真正應該學習的是提示詞技巧，還是邏輯思維？</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
     </div>
 
-    <div class="placeholder-note">
-      <strong>📌 給自己的備忘</strong>
-      每週日更新以上 4 個欄位：頭條新聞 · 新工具 · 新模型 · 本週洞見<br>
-      同時更新「最後更新日期」和「第 X 期」標示<br>
-      <span style="font-size:12px;margin-top:8px;display:block;color:#334155">（此提示僅顯示在草稿模式，正式發布前記得移除）</span>
+    <!-- Row 2: More news -->
+    <div class="news-grid">
+      <a href="https://unwire.hk/2026/06/23/openai-codex-cli-log-issue/tech-secure/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-tool">⚠️ 安全警告</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">7 小時前</span>
+        </div>
+        <h4>OpenAI Codex CLI 爆嚴重 Bug：每日寫 1.76TB 日誌足損毀 SSD</h4>
+        <p>OpenAI 開發者工具 Codex CLI 被發現嚴重日誌洩漏漏洞，每日寫入高達 1.76TB，一年可達 640TB，足以物理損壞硬碟。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/2026/06/10/ios27-siri-ai-cross-apps-screen-understanding-test/ai/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-model">📱 新產品</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">6月12日</span>
+        </div>
+        <h4>iOS 27 Siri AI 實試：跨 App 搵資料 + 自動化工作流程</h4>
+        <p>Apple iOS 27 嘅 Siri AI 大升級，實試跨 App 檢索資料、螢幕理解同自動化操作，對話流暢度顯著提升。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/2026/06/23/jack-ma-leads-alibabas-top-brass-in-rice-planting-symbol-of-ai-patience/ai/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-news">🏢 行業動態</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">3 小時前</span>
+        </div>
+        <h4>馬雲率阿里高層落田插秧：比喻 AI 耕種係長線投資</h4>
+        <p>阿里巴巴創辦人馬雲帶領高層親自下田插秧，以耕種比喻 AI 發展為長期投資，「不能趕著要收割」。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+      <a href="https://unwire.hk/unwire_tv/tencent-cloud-day-hk-2026-%ef%bc%9a%e6%96%b0%e6%89%8b%e4%b8%8a%e5%a0%82-30-%e5%88%86%e9%90%98%e5%8d%b3%e6%88%90%e5%8a%9f%e5%af%ab-app-codebuddy-ai-coding-%e8%a9%95%e6%b8%ac/" target="_blank" class="news-card" style="text-decoration:none;display:block">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="news-tag tag-tool">🇭🇰 本地活動</div>
+          <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">6月5日</span>
+        </div>
+        <h4>Tencent Cloud Day HK：CodeBuddy AI Coding 新手 30 分鐘寫 App</h4>
+        <p>香港 Tencent Cloud Day 現場實測 CodeBuddy AI 編碼工具，零基礎新手 30 分鐘內成功寫出完整 App。</p>
+        <span style="font-size:11px;color:var(--accent-cyan);margin-top:8px;display:inline-block">來源：unwire.hk ↗</span>
+      </a>
+    </div>
+
+    <div style="text-align:center;margin:20px 0">
+      <a href="https://unwire.hk/category/ai-tech/" target="_blank" style="display:inline-block;padding:10px 28px;border:1px solid var(--border-color);border-radius:100px;color:var(--accent-light-purple);text-decoration:none;font-size:14px;transition:all 0.2s">更多 AI 新聞 → unwire.hk</a>
     </div>
 
     <hr class="section-divider" style="margin:40px 0">
